@@ -5,13 +5,17 @@
   "engines": {
     "node": "5.9.1"
   },
-  "main": "index.js",
+  "main": "lib/game.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node .",
+    "dev": "nodemon .",
+    "lint": "standard --verbose | snazzy"
   },
   "dependencies": {
     "ejs": "2.4.1",
-    "express": "4.13.3"
+    "express": "4.13.3",
+    "nodemon": "^0.7.10",
+    "standard": "^5.3.1"
   },
   "repository": {
     "type": "git",
