@@ -1,1 +1,1 @@
-web: node phaser-multiplayer-game/lib/game.js
+web: node /lib/game.js
