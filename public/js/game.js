@@ -6,6 +6,7 @@ function preload () {
   game.load.image('earth', 'assets/light_sand.png')
   game.load.spritesheet('dude', 'assets/dude.png', 64, 64)
   game.load.spritesheet('enemy', 'assets/dude.png', 64, 64)
+  game.load.image('shot', 'assets/shot.png')
 }
 
 var socket // Socket connection
@@ -21,6 +22,10 @@ var cursors
 
 var myName
 var objName
+
+var shots
+var fireRate = 500
+var nextFire = 0
 
 function create () {
   socket = io.connect()
@@ -57,6 +62,16 @@ function create () {
 
   cursors = game.input.keyboard.createCursorKeys()
 
+  // Our shots group
+  shots = game.add.group();
+  shots.enableBody = true;
+  shots.physicsBodyType = Phaser.Physics.ARCADE;
+  shots.createMultiple(3, 'shot', 0, false);
+  shots.setAll('anchor.x', 0.5);
+  shots.setAll('anchor.y', 0.5);
+  shots.setAll('outOfBoundsKill', true);
+  shots.setAll('checkWorldBounds', true);
+
   // Start listening for events
   setEventHandlers()
 }
@@ -76,6 +91,9 @@ var setEventHandlers = function () {
 
   // Player removed message received
   socket.on('remove player', onRemovePlayer)
+  
+  // Player removed message received
+  socket.on('shot player', onShotPlayer)
 }
 
 // Socket connected
@@ -139,10 +157,23 @@ function onRemovePlayer (data) {
     return
   }
 
+  removePlayer.player.objName.destroy()
   removePlayer.player.kill()
 
   // Remove player from array
   enemies.splice(enemies.indexOf(removePlayer), 1)
+}
+
+function onShotPlayer (data) {
+  var shoterPlayer = playerById(data.id)
+
+  if (!shoterPlayer) {
+    console.log('Player not found: ', data.id)
+    return
+  }
+  console.log(shoterPlayer);
+  shoterPlayer.shot.xDest = data.xDest
+  shoterPlayer.shot.yDest = data.yDest
 }
 
 function update () {
@@ -160,8 +191,9 @@ function update () {
   }
 
   if (cursors.up.isDown) {
-    // The speed we'll travel at
+
     currentSpeed = 300
+
   } else {
     if (currentSpeed > 0) {
       currentSpeed -= 4
@@ -180,11 +212,13 @@ function update () {
   land.tilePosition.y = -game.camera.y
 
   if (game.input.activePointer.isDown) {
+    fire();
+    /*
     if (game.physics.arcade.distanceToPointer(player) >= 10) {
       currentSpeed = 300
 
-      player.rotation = game.physics.arcade.angleToPointer(player)
-    }
+      //player.rotation = game.physics.arcade.angleToPointer(player)
+    }*/
   }
   
   if (objName) objName.destroy();
@@ -194,6 +228,23 @@ function update () {
   objName.alignTo(player, Phaser.LEFT, -6);
   
   socket.emit('move player', { x: player.x, y: player.y, angle: player.angle, pname: myName});
+}
+
+function fire () {
+
+    if (game.time.now > nextFire && shots.countDead() > 0)
+    {
+        nextFire = game.time.now + fireRate;
+
+        var shot = shots.getFirstExists(false);
+
+        shot.reset(player.x, player.y);
+
+        shot.rotation = game.physics.arcade.moveToXY(shot, game.input.activePointer.worldX,game.input.activePointer.worldY, fireRate);
+        
+        socket.emit('shot player', {xDest:game.input.activePointer.worldX, yDest:game.input.activePointer.worldY});
+    }
+
 }
 
 function render () {

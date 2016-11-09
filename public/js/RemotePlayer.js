@@ -10,6 +10,11 @@ var RemotePlayer = function (index, game, player, startX, startY, startAngle) {
   this.player = player
   this.alive = true
 
+  this.fireRate = 500
+  this.nextFire = 0
+
+  this.shot = {}
+  
   this.player = game.add.sprite(x, y, 'enemy')
 
   this.player.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7], 20, true)
@@ -27,6 +32,15 @@ var RemotePlayer = function (index, game, player, startX, startY, startAngle) {
   this.lastPosition = { x: x, y: y, angle: angle }
   
   this.textStyle = { font: "16px Arial", fill: "#000" };
+  
+  this.shots = game.add.group();
+  this.shots.enableBody = true;
+  this.shots.physicsBodyType = Phaser.Physics.ARCADE;
+  this.shots.createMultiple(3, 'shot', 0, false);
+  this.shots.setAll('anchor.x', 0.5);
+  this.shots.setAll('anchor.y', 0.5);
+  this.shots.setAll('outOfBoundsKill', true);
+  this.shots.setAll('checkWorldBounds', true);
 }
 
 RemotePlayer.prototype.update = function () {
@@ -41,10 +55,37 @@ RemotePlayer.prototype.update = function () {
   this.lastPosition.y = this.player.y
   this.lastPosition.angle = this.player.angle
   
-  if (this.objName) this.objName.destroy();
-  this.objName = game.add.text(0, 0, this.player.pname, this.textStyle);
-  this.objName.alignTo(this.player, Phaser.LEFT, -6);
+  if (this.objName) this.objName.destroy()
+  this.objName = game.add.text(0, 0, this.player.pname, this.textStyle)
+  this.objName.alignTo(this.player, Phaser.LEFT, -6)
 
+  if (!isEmpty(this.shot)) {
+    var shot = this.shots.getFirstExists(false);
+    shot.reset(this.player.x, this.player.y);
+
+    shot.rotation = game.physics.arcade.moveToXY(shot, this.shot.xDest, this.shot.yDest, this.fireRate);
+    
+    this.shot = {};
+  }
+}
+
+RemotePlayer.prototype.damage = function() {
+    this.health -= 1
+    if (this.health <= 0)
+    {
+        this.alive = false
+        this.player.kill()
+    }
+    return false
+}
+
+function isEmpty(myObject) {
+    for(var key in myObject) {
+        if (myObject.hasOwnProperty(key)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 window.RemotePlayer = RemotePlayer
