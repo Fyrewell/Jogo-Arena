@@ -43,7 +43,7 @@ RemotePlayer.prototype.update = function () {
   
   if (this.objName) this.objName.destroy();
   this.objName = game.add.text(0, 0, this.player.pname, this.textStyle);
-  this.objName.alignTo(player, Phaser.LEFT, -6);
+  this.objName.alignTo(this.player, Phaser.LEFT, -6);
 
 }
 
