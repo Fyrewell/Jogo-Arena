@@ -19,6 +19,9 @@ var enemies
 var currentSpeed = 0
 var cursors
 
+var myName
+var objName
+
 function create () {
   socket = io.connect()
 
@@ -123,6 +126,7 @@ function onMovePlayer (data) {
   movePlayer.player.x = data.x
   movePlayer.player.y = data.y
   movePlayer.player.angle = data.angle
+  movePlayer.player.pname = data.pname
 }
 
 // Remove player
@@ -182,8 +186,14 @@ function update () {
       player.rotation = game.physics.arcade.angleToPointer(player)
     }
   }
-
-  socket.emit('move player', { x: player.x, y: player.y, angle: player.angle })
+  
+  if (objName) objName.destroy();
+  
+  var style = { font: "16px Arial", fill: "#000" };
+  objName = game.add.text(0, 0, myName, style);
+  objName.alignTo(player, Phaser.LEFT, -6);
+  
+  socket.emit('move player', { x: player.x, y: player.y, angle: player.angle, pname: myName});
 }
 
 function render () {

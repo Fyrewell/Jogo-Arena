@@ -78,9 +78,9 @@
 
             if (user) {
               uid = user.uid;
-              //initialX = Math.random()*500;
-              //initialY = Math.random()*500;
-              //console.log(user);
+              
+              myName = user.displayName;
+              
               writeUserData(user.uid, user.displayName, user.email, user.photoURL);
               
               document.getElementById("userLogado").innerHTML = user.displayName || user.email.split("@")[0];

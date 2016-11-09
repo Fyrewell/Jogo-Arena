@@ -25,6 +25,8 @@ var RemotePlayer = function (index, game, player, startX, startY, startAngle) {
   this.player.angle = angle
 
   this.lastPosition = { x: x, y: y, angle: angle }
+  
+  this.textStyle = { font: "16px Arial", fill: "#000" };
 }
 
 RemotePlayer.prototype.update = function () {
@@ -38,6 +40,11 @@ RemotePlayer.prototype.update = function () {
   this.lastPosition.x = this.player.x
   this.lastPosition.y = this.player.y
   this.lastPosition.angle = this.player.angle
+  
+  if (this.objName) this.objName.destroy();
+  this.objName = game.add.text(0, 0, this.player.pname, this.textStyle);
+  this.objName.alignTo(player, Phaser.LEFT, -6);
+
 }
 
 window.RemotePlayer = RemotePlayer
