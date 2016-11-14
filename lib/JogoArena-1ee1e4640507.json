@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "jogoarena-c089b",
+  "private_key_id": "1ee1e464050772eedb41cc93907273d7e9da1b7a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDNNG1D7g5eG3fb\nxainZXJdTQamW+pUc9NJMcWo8InIW8swn/o+Rwd2wqPFG4x2A1JsYcDY1LCh1c5c\nK33vkwuW93D3MvapDDX2XS7JG2eKbojl6y5Dsl3UqM5f3McOCveBo4jklt7Z7Fj2\n4iElOwCiWMjNYj29QEyIloUBXh9sf6DFJr9t8EuzMKCBN6PrS0w+p35qPNeBnE2r\nkiM3BGMfZlhmkZuLDUz3gry7Fn5UYBOlmiUPQcuNwTo7U/2y1sf0aJV9VfPdy3Y8\nhoJFzJ9oH/cO6PnPfMbfdfqwfU1ZxBzcsVysU50i0zueNJ6apL2+ijxJldx3+0sV\nbLctRBlpAgMBAAECggEAAKq79C2Q5GNod1FkI+8jeQQoEmBYGaAqvqEnyE3H1Nvf\nhC/w60Tl1E/7okddpICMQwfqTYobbNs6CXimtyGeNwZk2pjSzmfYwQ06erLZGk0T\nqtOh2dx5i5hk21DnYLdOaKB0cHHBFao7+8luXCWd8ekh9fDszHGqDgOXORLqPTsH\neE3uYdIdi6ivKrcrqOOVUvgpYftZ8muH0keGh1DG5SOf44f4T2LBO/azLODY2uAI\nq/RJdDS7P3+WA6rzWpLzs27m7Z2mg1pLf7T3z/QFmGCbYKwKeeT+JnRc1fwLUKef\nifVw1ZUBC1gByNMtq2rxdG67lDB0TuC27ZlFV/Lj5QKBgQDoFVzw5jsJf/+Q1qQk\n1pZ6TRjeB2vKu2kOELsXlYmfj9fikNJaWKoz2pPE9e7v/LwYzF2CnEIwxeHyYRPN\nJlLX1uX3FXAjvPHjmy1QH1+sJo04p4veLnj9og5fbSZi5ifa5SvuQctSQ+wWf/8h\nsQ3rFkyeunWTDOecy+XYH7oMjwKBgQDiWfkOhxwuCg022Qs7tEOWYybXf/szglI1\nBDA3FuV6WNjxcPWHrho9gfhqdJoOE0Rf0hNHt0hfnM3Wki4ispulIst/vIkdC3Jj\nwTztvNwQ0sHpVgjMYfQbob7+mgTT+kt/w91qyHkd+6+0V/GWoyTMMjsyr4l0SWWk\nS7EBpLHmhwKBgQDKPcOOEbMkpiv49XJ4v57F2OVwphriwcncfevrs14Ic/r27qjA\nHj/DjBf1LTMYYq8vFPfv12c+xVIOO1ZcEadje1tOo5njKsXHR/SGu7BNfhLWafrS\nlMDOlSfdNGqdCF92uvo7V45sk8/qE4QqwfWVBQujzmyixj4XPv9+BLfGNQKBgQCn\nsFA62w2dbgTsJU+VI68OstYLwNyxBFMyw6+UoHnRchEGjdDYe7sk5izLcSbQVqXI\n9zEhaD9N1jUISbO0MO3uISDxuRM7WUedb4Nb/RZrwDe4TeymvcrCzclZhXEeOcfF\nF63pdiuEcvlwedaY6rRQMsZ4fmMuq1GJrimsNf818QKBgQDVdlGlOCSqHrcfyDRO\nlRslP20PWPzcaO6+LAfT1LjoVUuSqjzq5PCiWSJwgEii23WQvM14S5E6kWgcnJzK\nSyhvHLfAiXMJBQjWgGL33rqDgOq74WHnyEG3hHDpABPQuMz/UmlT5D9M3LTXGSQl\niGkJS2sIsw66B2lkCtt67aBjvg==\n-----END PRIVATE KEY-----\n",
+  "client_email": "server@jogoarena-c089b.iam.gserviceaccount.com",
+  "client_id": "118193447097605891516",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/server%40jogoarena-c089b.iam.gserviceaccount.com"
+}

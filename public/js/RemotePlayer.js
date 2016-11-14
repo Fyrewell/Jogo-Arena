@@ -1,12 +1,12 @@
 /* global game */
 
-var RemotePlayer = function (index, game, player, startX, startY, startAngle) {
+var RemotePlayer = function (index, game, player, startX, startY, startAngle, inppname, uid, skin_shot, skin_char) {
   var x = startX
   var y = startY
   var angle = startAngle
 
   this.game = game
-  this.health = 3
+  this.health = 5
   this.player = player
   this.alive = true
 
@@ -14,8 +14,12 @@ var RemotePlayer = function (index, game, player, startX, startY, startAngle) {
   this.nextFire = 0
 
   this.shot = {}
-  
-  this.player = game.add.sprite(x, y, 'enemy')
+  this.pname = inppname
+  this.uid = uid;
+  this.skin_shot = skin_shot
+  this.skin_char = skin_char
+  console.log(skin_char, skin_shot)
+  this.player = game.add.sprite(x, y, 'char' + skin_char)
 
   this.player.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7], 20, true)
   this.player.animations.add('stop', [3], 20, true)
@@ -36,17 +40,20 @@ var RemotePlayer = function (index, game, player, startX, startY, startAngle) {
   this.shots = game.add.group();
   this.shots.enableBody = true;
   this.shots.physicsBodyType = Phaser.Physics.ARCADE;
-  this.shots.createMultiple(3, 'shot', 0, false);
+  this.shots.createMultiple(3, 'shot' + skin_shot, 0, false);
   this.shots.setAll('anchor.x', 0.5);
   this.shots.setAll('anchor.y', 0.5);
   this.shots.setAll('outOfBoundsKill', true);
   this.shots.setAll('checkWorldBounds', true);
+  
+  this.drawName()
 }
 
 RemotePlayer.prototype.update = function () {
   if (this.player.x !== this.lastPosition.x || this.player.y !== this.lastPosition.y || this.player.angle != this.lastPosition.angle) {
     this.player.play('move')
     this.player.rotation = Math.PI + game.physics.arcade.angleToXY(this.player, this.lastPosition.x, this.lastPosition.y)
+    this.drawName()
   } else {
     this.player.play('stop')
   }
@@ -54,12 +61,8 @@ RemotePlayer.prototype.update = function () {
   this.lastPosition.x = this.player.x
   this.lastPosition.y = this.player.y
   this.lastPosition.angle = this.player.angle
-  
-  if (this.objName) this.objName.destroy()
-  this.objName = game.add.text(0, 0, this.player.pname, this.textStyle)
-  this.objName.alignTo(this.player, Phaser.LEFT, -6)
 
-  if (!isEmpty(this.shot)) {
+  if (!isEmpty(this.shot) && this.shot != null) {
     var shot = this.shots.getFirstExists(false);
     shot.reset(this.player.x, this.player.y);
 
@@ -75,8 +78,15 @@ RemotePlayer.prototype.damage = function() {
     {
         this.alive = false
         this.player.kill()
+        return true
     }
     return false
+}
+
+RemotePlayer.prototype.drawName = function() {
+  if (this.objName) this.objName.destroy()
+  this.objName = game.add.text(0, 0, this.pname, this.textStyle)
+  this.objName.alignTo(this.player, Phaser.LEFT, -6)
 }
 
 function isEmpty(myObject) {

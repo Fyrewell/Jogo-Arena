@@ -1,12 +1,26 @@
-/* global Phaser RemotePlayer io */
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'main', { preload: preload, create: create, update: update, render: render })
+var game
+var skin_shot = 0
+var skin_char = 0
+
+function loadGame() {
+  game = new Phaser.Game(800, 600, Phaser.AUTO, 'main', { preload: preload, create: create, update: update, render: render })
+}
 
 function preload () {
   game.load.image('earth', 'assets/light_sand.png')
   game.load.spritesheet('dude', 'assets/dude.png', 64, 64)
-  game.load.spritesheet('enemy', 'assets/dude.png', 64, 64)
+  game.load.spritesheet('char', 'assets/dude.png', 64, 64)
+  game.load.spritesheet('char0', 'assets/dude.png', 64, 64)
+  game.load.spritesheet('char1', 'assets/dude.png', 64, 64)
+  game.load.spritesheet('char2', 'assets/dude.png', 64, 64)
+  game.load.spritesheet('char3', 'assets/dude.png', 64, 64)
   game.load.image('shot', 'assets/shot.png')
+  game.load.image('shot0', 'assets/shot0.png')
+  game.load.image('shot1', 'assets/shot1.png')
+  game.load.image('hearth', 'assets/hearth.png')
+  game.load.image('game_over', 'assets/game_over.png');
+  game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
 }
 
 var socket // Socket connection
@@ -20,12 +34,18 @@ var enemies
 var currentSpeed = 0
 var cursors
 
+var uid
 var myName
 var objName
 
 var shots
 var fireRate = 500
 var nextFire = 0
+var playerLife = 5
+
+var explosions
+
+var hearths = []
 
 function create () {
   socket = io.connect()
@@ -51,6 +71,12 @@ function create () {
   player.body.maxVelocity.setTo(400, 400)
   player.body.collideWorldBounds = true
 
+  for (var i=0;i<playerLife;i++){
+    var hearth = game.add.sprite(10 + i*40, 10, 'hearth')
+    hearth.fixedToCamera = true
+    hearths.push(hearth)
+  }
+  
   // Create some baddies to waste :)
   enemies = []
 
@@ -61,17 +87,27 @@ function create () {
   game.camera.focusOnXY(0, 0)
 
   cursors = game.input.keyboard.createCursorKeys()
-
+console.log('shot' + skin_shot);
   // Our shots group
   shots = game.add.group();
   shots.enableBody = true;
   shots.physicsBodyType = Phaser.Physics.ARCADE;
-  shots.createMultiple(3, 'shot', 0, false);
+  shots.createMultiple(3, 'shot' + skin_shot, 0, false);
   shots.setAll('anchor.x', 0.5);
   shots.setAll('anchor.y', 0.5);
   shots.setAll('outOfBoundsKill', true);
   shots.setAll('checkWorldBounds', true);
+  
+  //  Explosion pool
+  explosions = game.add.group();
 
+  for (var i = 0; i < 10; i++)
+  {
+      var explosionAnimation = explosions.create(0, 0, 'kaboom', [0], false);
+      explosionAnimation.anchor.setTo(0.5, 0.5);
+      explosionAnimation.animations.add('kaboom');
+  }
+  
   // Start listening for events
   setEventHandlers()
 }
@@ -92,8 +128,11 @@ var setEventHandlers = function () {
   // Player removed message received
   socket.on('remove player', onRemovePlayer)
   
-  // Player removed message received
+  // Player shot message received
   socket.on('shot player', onShotPlayer)
+  
+  // Player hit message received
+  socket.on('hit player', onHitPlayer)
 }
 
 // Socket connected
@@ -107,7 +146,7 @@ function onSocketConnected () {
   enemies = []
 
   // Send local player data to the game server
-  socket.emit('new player', { x: player.x, y: player.y, angle: player.angle })
+  socket.emit('new player', { x: player.x, y: player.y, angle: player.angle, pname:myName, uid:uid, skin_shot: skin_shot, skin_char: skin_char})
 }
 
 // Socket disconnected
@@ -125,9 +164,9 @@ function onNewPlayer (data) {
     console.log('Duplicate player!')
     return
   }
-
+console.log(data)
   // Add new player to the remote players array
-  enemies.push(new RemotePlayer(data.id, game, player, data.x, data.y, data.angle))
+  enemies[data.id] = new RemotePlayer(data.id, game, player, data.x, data.y, data.angle, data.pname, data.uid, data.skin_shot, data.skin_char)
 }
 
 // Move player
@@ -144,24 +183,42 @@ function onMovePlayer (data) {
   movePlayer.player.x = data.x
   movePlayer.player.y = data.y
   movePlayer.player.angle = data.angle
-  movePlayer.player.pname = data.pname
+  movePlayer.pname = data.pname
+
 }
 
 // Remove player
 function onRemovePlayer (data) {
   var removePlayer = playerById(data.id)
 
-  // Player not found
-  if (!removePlayer) {
+  if (data.id == this.id) {
+    player.kill();
+    
+    var explosionAnimation = explosions.getFirstExists(false);
+    explosionAnimation.reset(player.x, player.y);
+    explosionAnimation.play('kaboom', 30, false, true);
+    
+    game_over = game.add.sprite(160, 120, 'game_over');
+    game_over.fixedToCamera = true;
+
+    while (playerLife>0) {
+      hearths[playerLife-1].kill();
+      playerLife--;
+    }
+    
+    return
+  }else if (!removePlayer) { // Player not found
     console.log('Player not found: ', data.id)
+    return
+  }else{
     return
   }
 
-  removePlayer.player.objName.destroy()
+  removePlayer.objName.destroy()
   removePlayer.player.kill()
 
   // Remove player from array
-  enemies.splice(enemies.indexOf(removePlayer), 1)
+  delete enemies[data.id]
 }
 
 function onShotPlayer (data) {
@@ -171,16 +228,24 @@ function onShotPlayer (data) {
     console.log('Player not found: ', data.id)
     return
   }
-  console.log(shoterPlayer);
+
   shoterPlayer.shot.xDest = data.xDest
   shoterPlayer.shot.yDest = data.yDest
 }
 
+function onHitPlayer (data) {
+  
+  
+}
+
 function update () {
-  for (var i = 0; i < enemies.length; i++) {
+  
+  for (i in enemies) {
     if (enemies[i].alive) {
-      enemies[i].update()
+      game.physics.arcade.overlap(enemies[i].shots, player, shotHitPlayer, null, this);
       game.physics.arcade.collide(player, enemies[i].player)
+      game.physics.arcade.overlap(shots, enemies[i].player, shotHitEnemy, null, this);
+      enemies[i].update()
     }
   }
 
@@ -211,14 +276,10 @@ function update () {
   land.tilePosition.x = -game.camera.x
   land.tilePosition.y = -game.camera.y
 
-  if (game.input.activePointer.isDown) {
-    fire();
-    /*
-    if (game.physics.arcade.distanceToPointer(player) >= 10) {
-      currentSpeed = 300
-
-      //player.rotation = game.physics.arcade.angleToPointer(player)
-    }*/
+  if (player.alive) {
+    if (game.input.activePointer.isDown) {
+      fire();
+    }
   }
   
   if (objName) objName.destroy();
@@ -247,16 +308,54 @@ function fire () {
 
 }
 
+function shotHitPlayer (player, shot) {
+
+  shot.kill();
+  playerLife--;
+
+  hearths[playerLife].kill();
+  
+  socket.emit('hit player', {id: player.id});
+  
+  if (playerLife == 0){
+    player.kill();
+    
+    var explosionAnimation = explosions.getFirstExists(false);
+    explosionAnimation.reset(player.x, player.y);
+    explosionAnimation.play('kaboom', 30, false, true);
+    
+    game_over = game.add.sprite(160, 120, 'game_over');
+    game_over.fixedToCamera = true;
+    
+    socket.emit('dead player', {id: player.id});
+  }
+}
+
+function shotHitEnemy (enemy, shot) {
+
+  shot.kill();
+
+  var destroyed = enemies[enemy.name].damage();
+  
+  if (destroyed){
+    enemies[enemy.name].objName.destroy()
+    var explosionAnimation = explosions.getFirstExists(false);
+    explosionAnimation.reset(enemy.x, enemy.y);
+    explosionAnimation.play('kaboom', 30, false, true);
+
+    socket.emit('remove player', {id: enemy.name, killer_uid: uid, dead_uid: enemies[enemy.name].uid});
+  }
+
+}
+
 function render () {
 
 }
 
 // Find player by ID
 function playerById (id) {
-  for (var i = 0; i < enemies.length; i++) {
-    if (enemies[i].player.name === id) {
-      return enemies[i]
-    }
+  if (typeof enemies[id] !== 'undefined') {
+    return enemies[id]
   }
 
   return false
