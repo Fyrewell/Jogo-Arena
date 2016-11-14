@@ -101,6 +101,18 @@
     };
     firebase.initializeApp(config);
     
+    function writeUserData(userId, name, email, imageUrl, kills, deads, skin_shot, skin_char) {
+      firebase.database().ref('users/' + userId).set({
+        username: name,
+        email: email,
+        profile_picture : imageUrl,
+        kills: (kills) ? kills : 0,
+        deads: (deads) ? deads : 0,
+        skin_shot: (skin_shot) ? skin_shot : 0,
+        skin_char: (skin_char) ? skin_char : 0
+      });
+    }
+    
     function toggleSignIn() {
       if (firebase.auth().currentUser) {
         firebase.auth().signOut();
@@ -120,8 +132,19 @@
           
           var ref = firebase.database().ref('users/' + user.uid)
           ref.once('value', function(snapshot) {
+            var kills, deads, skin_shot, skin_char
+            if (snapshot.val()){
+              kills = snapshot.val().kills
+              deads = snapshot.val().deads
+              skin_shot = snapshot.val().skin_shot
+              skin_char = snapshot.val().skin_char
+            }else{
+              kills = deads = skin_shot = skin_char = 0
+            }
+            writeUserData(user.uid, user.displayName, user.email, user.photoURL, kills, deads,
+            skin_shot, skin_char);
             usrFbData = snapshot.val()
-            document.getElementById("char"+snapshot.val().skin_char).setAttribute("data-badge", "♥")
+            document.getElementById("char"+skin_char).setAttribute("data-badge", "♥")
             document.getElementById("dvChar").style.display = "block"
           })
       
