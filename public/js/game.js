@@ -92,7 +92,7 @@ function create () {
   game.camera.focusOnXY(0, 0)
 
   cursors = game.input.keyboard.createCursorKeys()
-console.log('shot' + skin_shot);
+
   // Our shots group
   shots = game.add.group();
   shots.enableBody = true;
@@ -135,9 +135,7 @@ var setEventHandlers = function () {
   
   // Player shot message received
   socket.on('shot player', onShotPlayer)
-  
-  // Player hit message received
-  socket.on('hit player', onHitPlayer)
+
 }
 
 // Socket connected
@@ -238,11 +236,6 @@ function onShotPlayer (data) {
   shoterPlayer.shot.yDest = data.yDest
 }
 
-function onHitPlayer (data) {
-  
-  
-}
-
 function update () {
   
   for (i in enemies) {
@@ -319,8 +312,6 @@ function shotHitPlayer (player, shot) {
   playerLife--;
 
   hearths[playerLife].kill();
-  
-  socket.emit('hit player', {id: player.id});
   
   if (playerLife == 0){
     player.kill();
