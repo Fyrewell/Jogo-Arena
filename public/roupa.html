@@ -46,26 +46,42 @@
           <div class="mdl-grid" style="max-width:680px;margin:auto">
             <div class="mdl-cell mdl-cell--12-col">
               <div class="docs-text-styling component-title">
-                <h3>Arma</h3>
+                <h3>Roupa</h3>
                 <p>Selecione uma das mostradas abaixo.</p>
               </div>
             </div>
-            <div id="dvShot" class="mdl-cell mdl-cell--12-col" style="display:none">
-              <div id="shot0" class="material-icons mdl-badge mdl-badge--overlap"
-                  style="padding:12px;min-height:32px;border:1px dashed #ccc" onclick="selectShot(0)">
-                <img src="/assets/shot0.png">
+            <div id="dvChar" class="mdl-cell mdl-cell--12-col" style="display:none">
+              <div id="char0" class="material-icons mdl-badge mdl-badge--overlap"
+                  style="padding:12px;min-height:32px;border:1px dashed #ccc" onclick="selectChar(0)">
+                <img src="/assets/char0.png">
               </div>
-              <div id="shot1" class="material-icons mdl-badge mdl-badge--overlap"
-                  style="padding:12px;min-height:32px;border:1px dashed #ccc" onclick="selectShot(1)">
-                <img src="/assets/shot1.png">
+              <div id="char3" class="material-icons mdl-badge mdl-badge--overlap"
+                  style="padding:12px;min-height:32px;border:1px dashed #ccc" onclick="selectChar(3)">
+                <img src="/assets/char3.png">
               </div>
-              <div id="shot2" class="material-icons mdl-badge mdl-badge--overlap"
-                  style="padding:12px;min-height:32px;border:1px dashed #ccc" onclick="selectShot(2)">
-                <img src="/assets/shot2.png">
+              <div id="char4" class="material-icons mdl-badge mdl-badge--overlap"
+                  style="padding:12px;min-height:32px;border:1px dashed #ccc" onclick="selectChar(4)">
+                <img src="/assets/char4.png">
               </div>
-              <div id="shot3" class="material-icons mdl-badge mdl-badge--overlap"
-                  style="padding:12px;min-height:32px;border:1px dashed #ccc" onclick="selectShot(3)">
-                <img src="/assets/shot3.png">
+              <div id="char5" class="material-icons mdl-badge mdl-badge--overlap"
+                  style="padding:12px;min-height:32px;border:1px dashed #ccc" onclick="selectChar(5)">
+                <img src="/assets/char5.png">
+              </div>
+              <div id="char6" class="material-icons mdl-badge mdl-badge--overlap"
+                  style="padding:12px;min-height:32px;border:1px dashed #ccc" onclick="selectChar(6)">
+                <img src="/assets/char6.png">
+              </div>
+              <div id="char7" class="material-icons mdl-badge mdl-badge--overlap"
+                  style="padding:12px;min-height:32px;border:1px dashed #ccc" onclick="selectChar(7)">
+                <img src="/assets/char7.png">
+              </div>
+              <div id="char8" class="material-icons mdl-badge mdl-badge--overlap"
+                  style="padding:12px;min-height:32px;border:1px dashed #ccc" onclick="selectChar(8)">
+                <img src="/assets/char8.png">
+              </div>
+              <div id="char9" class="material-icons mdl-badge mdl-badge--overlap"
+                  style="padding:12px;min-height:32px;border:1px dashed #ccc" onclick="selectChar(9)">
+                <img src="/assets/char9.png">
               </div>
             </div>
           </div>
@@ -105,8 +121,8 @@
           var ref = firebase.database().ref('users/' + user.uid)
           ref.once('value', function(snapshot) {
             usrFbData = snapshot.val()
-            document.getElementById("shot"+snapshot.val().skin_shot).setAttribute("data-badge", "♥")
-            document.getElementById("dvShot").style.display = "block"
+            document.getElementById("char"+snapshot.val().skin_char).setAttribute("data-badge", "♥")
+            document.getElementById("dvChar").style.display = "block"
           })
       
           document.getElementById("userLogado").innerHTML = user.displayName || user.email.split("@")[0];
@@ -132,20 +148,20 @@
       initApp()
     };
     
-    function selectShot(shotNum) {
+    function selectChar(charNum) {
       var arrBad = document.getElementsByClassName("mdl-badge")
       for (var i = 0; i < arrBad.length; i++) {
         arrBad[i].removeAttribute("data-badge")
       }
-      document.getElementById("shot"+shotNum).setAttribute("data-badge", "♥")
+      document.getElementById("char"+charNum).setAttribute("data-badge", "♥")
       firebase.database().ref('users/' + usrId).set({
         username: usrFbData.username,
         email: usrFbData.email,
         profile_picture : usrFbData.profile_picture,
         kills: (usrFbData.kills) ? usrFbData.kills : 0,
         deads: (usrFbData.deads) ? usrFbData.deads : 0,
-        skin_shot: shotNum,
-        skin_char: (usrFbData.skin_char) ? usrFbData.skin_char : 0
+        skin_shot: (usrFbData.skin_shot) ? usrFbData.skin_shot : 0,
+        skin_char: charNum
       });
     }
 

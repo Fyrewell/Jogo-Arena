@@ -9,15 +9,19 @@ function loadGame() {
 
 function preload () {
   game.load.image('earth', 'assets/light_sand.png')
-  game.load.spritesheet('dude', 'assets/dude.png', 64, 64)
-  game.load.spritesheet('char', 'assets/dude.png', 64, 64)
-  game.load.spritesheet('char0', 'assets/dude.png', 64, 64)
-  game.load.spritesheet('char1', 'assets/dude.png', 64, 64)
-  game.load.spritesheet('char2', 'assets/dude.png', 64, 64)
-  game.load.spritesheet('char3', 'assets/dude.png', 64, 64)
+  game.load.spritesheet('char0', 'assets/sprite_char0.png', 64, 64)
+  game.load.spritesheet('char3', 'assets/sprite_char3.png', 64, 64)
+  game.load.spritesheet('char4', 'assets/sprite_char4.png', 64, 64)
+  game.load.spritesheet('char5', 'assets/sprite_char5.png', 64, 64)
+  game.load.spritesheet('char6', 'assets/sprite_char6.png', 64, 64)
+  game.load.spritesheet('char7', 'assets/sprite_char7.png', 64, 64)
+  game.load.spritesheet('char8', 'assets/sprite_char8.png', 64, 64)
+  game.load.spritesheet('char9', 'assets/sprite_char9.png', 64, 64)
   game.load.image('shot', 'assets/shot.png')
   game.load.image('shot0', 'assets/shot0.png')
   game.load.image('shot1', 'assets/shot1.png')
+  game.load.image('shot2', 'assets/shot2.png')
+  game.load.image('shot3', 'assets/shot3.png')
   game.load.image('hearth', 'assets/hearth.png')
   game.load.image('game_over', 'assets/game_over.png');
   game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
@@ -60,7 +64,8 @@ function create () {
   // The base of our player
   var startX = Math.round(Math.random() * (1000) - 500)
   var startY = Math.round(Math.random() * (1000) - 500)
-  player = game.add.sprite(startX, startY, 'dude')
+  player = game.add.sprite(startX, startY, 'char' + skin_char)
+  player.angle += 90;
   player.anchor.setTo(0.5, 0.5)
   player.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7], 20, true)
   player.animations.add('stop', [3], 20, true)
