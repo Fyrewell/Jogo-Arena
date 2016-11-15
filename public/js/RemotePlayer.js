@@ -10,7 +10,7 @@ var RemotePlayer = function (index, game, player, startX, startY, startAngle, in
   this.player = player
   this.alive = true
 
-  this.fireRate = 500
+  this.fireRate = 600
   this.nextFire = 0
 
   this.shot = {}
@@ -40,7 +40,7 @@ var RemotePlayer = function (index, game, player, startX, startY, startAngle, in
   this.shots = game.add.group();
   this.shots.enableBody = true;
   this.shots.physicsBodyType = Phaser.Physics.ARCADE;
-  this.shots.createMultiple(3, 'shot' + skin_shot, 0, false);
+  this.shots.createMultiple(2, 'shot' + skin_shot, 0, false);
   this.shots.setAll('anchor.x', 0.5);
   this.shots.setAll('anchor.y', 0.5);
   this.shots.setAll('outOfBoundsKill', true);
@@ -64,11 +64,11 @@ RemotePlayer.prototype.update = function () {
 
   if (!isEmpty(this.shot) && this.shot != null) {
     var shot = this.shots.getFirstExists(false);
-    shot.reset(this.player.x, this.player.y);
-
-    shot.rotation = game.physics.arcade.moveToXY(shot, this.shot.xDest, this.shot.yDest, this.fireRate);
-    
-    this.shot = {};
+    if (shot != null) {
+      shot.reset(this.player.x, this.player.y);
+      shot.rotation = game.physics.arcade.moveToXY(shot, this.shot.xDest, this.shot.yDest, this.fireRate);
+      this.shot = {};
+    }
   }
 }
 

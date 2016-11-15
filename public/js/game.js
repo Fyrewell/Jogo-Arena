@@ -43,7 +43,7 @@ var myName
 var objName
 
 var shots
-var fireRate = 500
+var fireRate = 600
 var nextFire = 0
 var playerLife = 5
 
@@ -97,7 +97,7 @@ function create () {
   shots = game.add.group();
   shots.enableBody = true;
   shots.physicsBodyType = Phaser.Physics.ARCADE;
-  shots.createMultiple(3, 'shot' + skin_shot, 0, false);
+  shots.createMultiple(2, 'shot' + skin_shot, 0, false);
   shots.setAll('anchor.x', 0.5);
   shots.setAll('anchor.y', 0.5);
   shots.setAll('outOfBoundsKill', true);
