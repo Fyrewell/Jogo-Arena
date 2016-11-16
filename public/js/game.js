@@ -339,7 +339,7 @@ function shotHitEnemy (enemy, shot) {
     explosionAnimation.reset(enemy.x, enemy.y);
     explosionAnimation.play('kaboom', 30, false, true);
 
-    socket.emit('remove player', {id: enemy.name, killer_uid: uid, dead_uid: enemies[enemy.name].uid});
+    socket.emit('remove player', {id: enemy.player.id, killer_uid: uid, dead_uid: enemies[enemy.name].uid});
   }
 
 }
