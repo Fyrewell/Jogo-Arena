@@ -27,7 +27,7 @@ function preload () {
   game.load.spritesheet('kaboom', 'assets/explosion.png', 64, 64, 23);
 }
 
-var socket // Socket connection
+var socket
 
 var land
 
@@ -82,7 +82,6 @@ function create () {
     hearths.push(hearth)
   }
   
-  // Create some baddies to waste :)
   enemies = []
 
   player.bringToTop()
@@ -263,6 +262,7 @@ function update () {
     }
   }
 
+  // Let's move
   game.physics.arcade.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity)
 
   if (currentSpeed > 0) {
@@ -279,35 +279,38 @@ function update () {
       fire();
     }
   }
-  
+
+  // Update player name
   if (objName) objName.destroy();
-  
   var style = { font: "16px Arial", fill: "#000" };
   objName = game.add.text(0, 0, myName, style);
   objName.alignTo(player, Phaser.LEFT, -6);
-  
+
+  // Emit to server and all player movement
   socket.emit('move player', { x: player.x, y: player.y, angle: player.angle, pname: myName});
 }
 
 function fire () {
 
-    if (game.time.now > nextFire && shots.countDead() > 0)
-    {
-        nextFire = game.time.now + fireRate;
+  // Check if is time to fire based on the fire quantity max and shot's delay
+  if (game.time.now > nextFire && shots.countDead() > 0)
+  {
+      nextFire = game.time.now + fireRate;
 
-        var shot = shots.getFirstExists(false);
+      var shot = shots.getFirstExists(false);
 
-        shot.reset(player.x, player.y);
+      shot.reset(player.x, player.y);
 
-        shot.rotation = game.physics.arcade.moveToXY(shot, game.input.activePointer.worldX,game.input.activePointer.worldY, fireRate);
-        
-        socket.emit('shot player', {xDest:game.input.activePointer.worldX, yDest:game.input.activePointer.worldY});
-    }
+      shot.rotation = game.physics.arcade.moveToXY(shot, game.input.activePointer.worldX,game.input.activePointer.worldY, fireRate);
+      
+      socket.emit('shot player', {xDest:game.input.activePointer.worldX, yDest:game.input.activePointer.worldY});
+  }
 
 }
 
 function shotHitPlayer (player, shot) {
 
+  // Remove shot and decrement life :/
   shot.kill();
   playerLife--;
 
@@ -315,30 +318,32 @@ function shotHitPlayer (player, shot) {
   
   if (playerLife == 0){
     player.kill();
-    
+
     var explosionAnimation = explosions.getFirstExists(false);
     explosionAnimation.reset(player.x, player.y);
     explosionAnimation.play('kaboom', 30, false, true);
-    
+
     game_over = game.add.sprite(160, 120, 'game_over');
     game_over.fixedToCamera = true;
-    
+
+    // Player dead
     socket.emit('dead player', {id: player.id});
   }
 }
 
 function shotHitEnemy (enemy, shot) {
-
+  // Remove shot
   shot.kill();
 
   var destroyed = enemies[enemy.name].damage();
-  
+
   if (destroyed){
     enemies[enemy.name].objName.destroy()
     var explosionAnimation = explosions.getFirstExists(false);
     explosionAnimation.reset(enemy.x, enemy.y);
     explosionAnimation.play('kaboom', 30, false, true);
 
+    // Player kill an enemy
     socket.emit('remove player', {id: enemy.player.id, killer_uid: uid, dead_uid: enemies[enemy.name].uid});
   }
 
