@@ -31,7 +31,7 @@
       if (!firebase.auth().currentUser) {
         var provider = new firebase.auth.FacebookAuthProvider();
         provider.addScope('user_likes');
-        firebase.auth().signInWithRedirect(provider);
+        firebase.auth().signInWithPopup(provider);
       } else {
         firebase.auth().signOut();
 
