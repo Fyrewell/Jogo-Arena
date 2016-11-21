@@ -54,16 +54,16 @@ var hearths = []
 function create () {
   socket = io.connect()
 
-  // Resize our game world to be a 2000 x 2000 square
-  game.world.setBounds(-500, -500, 1000, 1000)
+  // Resize our game world to be a 800 x 600 square
+  game.world.setBounds(-400, -300, 400, 300)
 
   // Our tiled scrolling background
   land = game.add.tileSprite(0, 0, 800, 600, 'earth')
   land.fixedToCamera = true
 
   // The base of our player
-  var startX = Math.round(Math.random() * (1000) - 500)
-  var startY = Math.round(Math.random() * (1000) - 500)
+  var startX = Math.round(Math.random() * (600) - 300)
+  var startY = Math.round(Math.random() * (800) - 400)
   player = game.add.sprite(startX, startY, 'char' + skin_char)
   player.angle += 90;
   player.anchor.setTo(0.5, 0.5)
