@@ -80,6 +80,9 @@
     }
 
     window.onload = function() {
+      if(navigator.userAgent.match(/IEMobile|Windows Phone|Lumia|Android|webOS|iPhone|iPod|Blackberry|PlayBook|BB10|Mobile Safari|Opera Mini|\bCrMo\/|Opera Mobi/i){
+        alert('android');   
+      }
       initAppFacebook();
     };
     
