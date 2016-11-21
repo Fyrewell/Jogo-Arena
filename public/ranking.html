@@ -133,8 +133,8 @@
       var temp = {}
       usersRef.once('value', function(snapshot) {
         for(var i in snapshot.val()) {
-          for (let j=i+1;j<snapshot.val().length;j++){
-            if (snapshot.val()[j].kills > snapshot.val()[i].kills) {
+          for(var j in snapshot.val()) {
+            if (i!=j && snapshot.val()[j].kills > snapshot.val()[i].kills) {
               temp = snapshot.val()[i]
               snapshot.val()[i] = snapshot.val()[j]
               snapshot.val()[j] = temp
