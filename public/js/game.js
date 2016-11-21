@@ -55,7 +55,7 @@ function create () {
   socket = io.connect()
 
   // Resize our game world to be a 800 x 600 square
-  game.world.setBounds(-400, -300, 400, 300)
+  game.world.setBounds(0, 0, 800, 600)
 
   // Our tiled scrolling background
   land = game.add.tileSprite(0, 0, 800, 600, 'earth')
@@ -87,7 +87,7 @@ function create () {
   player.bringToTop()
 
   game.camera.follow(player)
-  game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300)
+  game.camera.deadzone = new Phaser.Rectangle(0, 0, 800, 600)
   game.camera.focusOnXY(0, 0)
 
   cursors = game.input.keyboard.createCursorKeys()
