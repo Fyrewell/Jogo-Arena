@@ -246,13 +246,18 @@ function update () {
     }
   }
 
-  if (cursors.left.isDown) {
+	cursors.up.wasd = game.input.keyboard.addKey(Phaser.Keyboard.W);
+	cursors.left.wasd = game.input.keyboard.addKey(Phaser.Keyboard.A);
+	cursors.down.wasd = game.input.keyboard.addKey(Phaser.Keyboard.S);
+	cursors.right.wasd = game.input.keyboard.addKey(Phaser.Keyboard.D);
+  
+  if (cursors.left.isDown || cursors.left.wasd.isDown) {
     player.angle -= 4
-  } else if (cursors.right.isDown) {
+  } else if (cursors.right.isDown || cursors.right.wasd.isDown) {
     player.angle += 4
   }
 
-  if (cursors.up.isDown) {
+  if (cursors.up.isDown || cursors.up.wasd.isDown) {
 
     currentSpeed = 300
 
